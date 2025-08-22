@@ -61,6 +61,9 @@ $(function () {
     clearInterval(gameInterval); // 떨어지는 아이템 생성 중지
     clearInterval(timerInterval); // 60초 부터 떨어지는 초 설정 중지
 
+    // 잔여 노트 정리 (화면 깔끔)
+    $(".note").stop(true, true).remove();
+
     //최종 점수를 게임오버 모달에 표시
 
     $("#final-score").text(score);
@@ -180,7 +183,7 @@ $(function () {
           성공함수(lane);
 
           //해당 키 버튼에 성공 효과 클래스 추가
-          $(".key").eq(lane).addClass("prefect");
+          $(".key").eq(lane).addClass("perfect");
           setTimeout(() => $(".key").eq(lane).removeClass("perfect"), 3000);
           // setTimeout 을 이용해서 입력한 키보드 효ㅕ과를 0.3초 후 누름 뗄 설정에서
           // CSS제공
@@ -189,11 +192,44 @@ $(function () {
         }
       }
     });
-
+    /**
+     * mousedown : 마우스를 사용하는 기기를 위한 이벤트
+     *
+     * touchstart : 터치스크린이 있는 기기를 위한 이벤트
+     *              손가락이 화면에 닿았을떄 발생
+     *
+     * mousedown으로만 모두 처리 가능하긴함
+     *
+     * 하지만 반응속도 지연이 발생
+     *
+     * 모바일 브라우저는 사용자가 화면을 터치했을때 이것 이 한번의 탭인
+     * 아니면 화면을 확대하기 위한 더블 탭인지 구분하기 위해
+     * 0.3초 정도 기다림 후 작업을 진행
+     *
+     *
+     * 과제 : 마우스 클릭 및 모바일 터치 처리
+     * $(".key".on("mousedown touchstart", function(e){
+     *
+     * e.preventDefault(); // 더블 클릭시 확대 등 기본 동작 방지
+     *
+     * })
+     *
+     *
+     */
     // 성공 / 실패 관계없이 항상 키 눌림 설정에 대해서 CSS 적으로 보여주기
+    //$(".key").eq(lane) 현재 놀림을 당하고 있는 키에 passed 클래스 추가
     $(".key").eq(lane).addClass("passed");
+    // 0.1초 후 눌림을 당하고 눌러하기를 종료한 레인 키에 passed 클래스 제거
     setTimeout(() => $(".key").eq(lane).removeClass("passed"), 3000);
   });
 
-  startGame();
+  $(".key").on("mousedown touchstart", function (e) {
+    e.preventDefault(); // 터치 확대/더블탭 방지
+    const lane = $(this).index(); // 몇 번째 .key 인지 가져오기
+    handleInput(lane);
+  });
+
+  $("#startBtn").click(() => {
+    startGame();
+  });
 });
