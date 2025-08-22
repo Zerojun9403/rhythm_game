@@ -2,7 +2,7 @@ $(function () {
   //====== 게임 변수 초기화 ====//
   let score = 0; // 플레이어의 현재 점수
   let miss = 0; // 놓친 아이템수
-  let timeLeft = 30; //남은 게임 시간
+  let timeLeft = 60; //남은 게임 시간
   let gameActive = true;
   let gameInterval;
   let timerInterval;
@@ -219,9 +219,10 @@ $(function () {
      *
      */
 
-    $(".key").on("mousedown touchstart", function (e) {
+    //$(".key").on("mousedown touchstart", function (e) {
+    $(".key").on("touchstart", function (e) {
       e.preventDefault(); // 더블 클릭시 확대 등 기본 동작 방지
-
+      e.stopPropagation();
       const lane = $(this).parent().index();
       const judgeLine = $("#game-container").height() - 80;
       $(".note").each(function () {
